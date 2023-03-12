@@ -7,22 +7,24 @@ const expenseList = document.querySelector(".expense-section ul")
 // Setting initial balance
 let currentBalance = 0
 
-// A function that updates the balance
+// A funct that updates the balance
 function updateBalance() {
 	balance.textContent = `$${currentBalance.toFixed(2)}`
 }
 
-// A function that adds an entry to the list of incomes
+// Funct adds an entry to the list of incomes
 function addIncome(description, amount) {
 	if (!description) {
 		alert("Please enter a description")
 		return
 	}
-	if (amount <= 0) {
-		alert("Please enter a positive amount")
+	// Replace comma when user write amount so it worked eg 23,30=>23.30
+	amount = +amount.replace(/,/g, ".")
+	if (isNaN(amount) || amount <= 0) {
+		alert("Please enter a valid amount")
 		return
 	}
-	// Adding an item to the list
+	// Add an item to the list
 	const incomeItem = document.createElement("li")
 	incomeItem.classList.add("income")
 	incomeItem.innerHTML = `
@@ -31,23 +33,24 @@ function addIncome(description, amount) {
      `
 	incomeList.appendChild(incomeItem)
 
-	// Updating balance
+	// Update balance
 	currentBalance += amount
 	updateBalance()
 }
 
-// A function that adds description to the list of expenses
+// A funct adds description to the list of expenses
 function addExpense(description, amount) {
 	if (!description) {
 		alert("Please enter a description")
 		return
 	}
-	if (amount <= 0) {
-		alert("Please enter a positive amount")
+	if (isNaN(amount.replaceAll(",", ".")) || amount.replaceAll(",", ".") <= 0) {
+		alert("Please enter a valid amount")
 		return
 	}
+	amount = +amount.replaceAll(",", ".")
 
-	// Adding an item to the list
+	// Add item to the list
 	const expenseItem = document.createElement("li")
 	expenseItem.classList.add("expense")
 	expenseItem.innerHTML = `
@@ -56,18 +59,18 @@ function addExpense(description, amount) {
     `
 	expenseList.appendChild(expenseItem)
 
-	// Updating balance
+	// Update balance
 	currentBalance -= amount
 	updateBalance()
 }
 
-// Adding event handlers for buttons
+// Add eventlisteners for buttons
 incomeForm.addEventListener("submit", function (e) {
 	e.preventDefault()
 	const description = document.getElementById("income-description").value
-	const amount = Number(document.getElementById("income-amount").value)
+	const amount = document.getElementById("income-amount").value
 	addIncome(description, amount)
-	// Clearing form fields
+	// Clearing form
 	incomeForm.reset()
 })
 
@@ -75,8 +78,8 @@ expenseForm.addEventListener("submit", function (e) {
 	e.preventDefault() // It prevents the default submit function, submitting the form and refreshing the page
 
 	const description = document.getElementById("expense-description").value
-	const amount = Number(document.getElementById("expense-amount").value)
+	const amount = document.getElementById("expense-amount").value
 	addExpense(description, amount)
-	// Clearing form fields
+	// Clearing form
 	expenseForm.reset()
 })
